@@ -1,36 +1,42 @@
-from notes import add_note, list_notes, delete_note, find_notes, edit_note
+from service import NoteService
+
+service = NoteService()
 
 def main():
-    print('Input command:')
+    print('Note manager')
     print('Commands: add, list, delete, find, edit, exit')
 
     while True:
-        task = input('Enter command: ')
+        task = input('Enter command: ').strip()
+
         if task.startswith('add '):
-            text = task[4:].strip('')
-            add_note(text)
+            text = task[4:]
+            service.add(text)
 
         elif task == 'list':
-            list_notes()
+            notes: None = service.list()
+            for n in notes:
+                print(f'{n.id}|{n.text}|{n.status}|{n.created_at}')
 
         elif task.startswith('delete '):
             print('Are you sure you want to delete this note?')
             answer = input('y/n: ')
             if answer == 'y':
-                note_id = int(task.split()[1])
-                delete_note(note_id)
+                service.delete(int(task.split()[1]))
             else:
                 print('Aborted')
 
         elif task.startswith('find '):
-            key_word = task[5:].strip('')
-            find_notes(key_word)
+            keyword = task[5:].strip('')
+            results = service.find(keyword)
+            for n in results:
+                print(f'{n.id}|{n.text}|{n.status}|{n.created_at}')
 
         elif task.startswith('edit '):
             note_id = int(task.split()[1])
             parts = task.split()
             text = " ".join(parts[2:]) if len(parts) > 2 else ""
-            edit_note(note_id, text)
+            service.edit(note_id, text)
 
         elif task == 'exit':
             break
