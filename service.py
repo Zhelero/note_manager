@@ -5,25 +5,19 @@ class NoteService:
     def __init__(self):
         self.repo = NoteRepository()
 
+
     def add(self, text):
-        notes = self.repo.load()
-        new_id = 1 if not notes else notes[-1].id+1
-        note = Note.create(new_id, text)
-
-        notes.append(note)
-        self.repo.save(notes)
-
-        print('Added note #{}'.format(new_id))
+        note = Note.create(0, text)
+        self.repo.add(note)
+        print('Added note')
 
 
     def list(self) -> None:
         return self.repo.load()
 
-    def delete(self, note_id):
-        notes = self.repo.load()
-        notes = [n for n in notes if n.id != note_id]
-        self.repo.save(notes)
 
+    def delete(self, note_id):
+        self.repo.delete(note_id)
         print('Deleted note #{}'.format(note_id))
 
 
@@ -41,6 +35,6 @@ class NoteService:
                     note.status = 'Done'
                 else:
                     note.text = text
-
-        self.repo.save(notes)
+                print(note.id, note.text, note.status, note.created_at)
+                self.repo.update(note)
         print('Edited note #{}'.format(note_id))

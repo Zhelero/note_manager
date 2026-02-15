@@ -14,7 +14,7 @@ def main():
             service.add(text)
 
         elif task == 'list':
-            notes: None = service.list()
+            notes = service.list()
             for n in notes:
                 print(f'{n.id}|{n.text}|{n.status}|{n.created_at}')
 
